@@ -5,6 +5,11 @@ Each proof was checked by two independent AI referees told to assume it was wron
 was found twice, by two agents working separately with different codings. It passed five
 referee reports in all, and the coordinating AI (Claude) also checked its proof line by line. No human expert has checked anything here. No formal proof exists.
 
+Update (2026-11-19). The new half of Theorem B, add(UN) ≤ add(N) from a universally null set
+of size cof(N), now has a Lean proof, including Lemmas 1, 2 and 3. The Lean proof changes some
+steps of the proof below. See `formalisation-theorem-b.md`. Theorem A still has no formal
+proof.
+
 Source question: T. Goto, *Forcing and cardinal invariants of universally null sets*,
 arXiv:2607.12936v4, Question 6.3. Is add(N) < add(UN) consistent, or does ZFC prove
 add(N) = add(UN)?
