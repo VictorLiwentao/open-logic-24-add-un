@@ -25,30 +25,41 @@ Known from the paper: add(N) ≤ add(UN) ≤ non(UN) = non(N).
 - Each proof was attacked by independent AI referees. Theorem B was found twice by separate
   agents and passed five referee reports.
 - **No human expert has checked any proof.**
-- **The new half of Theorem B has a Lean proof** (2026-11-19): a universally null set of size
-  cof(N) gives add(UN) ≤ add(N). The other half, add(N) ≤ add(UN), is Goto's Corollary 5.13.
-  It is cited, not formalised. No human has reviewed the Lean definitions. See
-  [notes/formalisation-theorem-b.md](notes/formalisation-theorem-b.md).
-- **Theorem A has no formal proof.**
+- **Theorems A and B, the corollaries and the three cited results have Lean proofs**
+  (2026-11-19), with no hypothesis left. Lean checks the proofs. It does not check that the
+  Lean definitions say what the note means, and no human has reviewed them. See
+  [notes/formalisation-theorem-b.md](notes/formalisation-theorem-b.md) and
+  [notes/formalisation-theorem-a-and-cited.md](notes/formalisation-theorem-a-and-cited.md).
+- The Lean proofs of the cited results (Goto's Corollary 5.13 and Proposition 5.4,
+  Grzegorek's theorem) do not follow the sources. The Lean proof of Theorem A changes the
+  construction of the note.
 - The literature search found no earlier statement of Theorem A or B. It did not cover Google
   Scholar, MathSciNet, or arXiv full text, so novelty is not established.
 
 Treat every claim without a Lean proof as a conjecture with a detailed proof sketch until it
-is checked.
+is checked. The question itself is open.
 
 ## Claimed results
 
 | Claim | Statement | Status |
 | --- | --- | --- |
-| Theorem A | add(UN) ≤ d | Informal proof, AI-refereed |
-| Theorem B, hard direction | If there is a universally null set of size cof(N), then add(UN) ≤ add(N) | Lean proof, no hypothesis |
-| Theorem B | If there is a universally null set of size cof(N), then add(UN) = add(N) | Lean proof from add(N) ≤ add(UN) |
-| Corollary (a) | non(N) = cof(N) implies add(UN) = add(N) | Lean proof from Grzegorek's theorem and add(N) ≤ add(UN) |
-| Corollary (b) | c ≤ ℵ₂ implies add(UN) = add(N) | Lean proof from the same two results |
-| Corollary (c) | add(N) < add(UN) implies c ≥ ℵ₃, non(N) < cof(N), and every universally null set has size < cof(N) | Lean proof from the same two results |
+| Theorem A | add(UN) ≤ d | Lean proof |
+| Theorem B | If there is a universally null set of size cof(N), then add(UN) = add(N) | Lean proof |
+| Corollary (a) | non(N) = cof(N) implies add(UN) = add(N) | Lean proof |
+| Corollary (b) | c ≤ ℵ₂ implies add(UN) = add(N) | Lean proof |
+| Corollary (c) | add(N) < add(UN) implies c ≥ ℵ₃, non(N) < cof(N), and every universally null set has size < cof(N) | Lean proof |
 
-The two cited results, Grzegorek's theorem and add(N) ≤ add(UN) (Goto, Corollary 5.13), are
-not formalised.
+Cited results, also proved in Lean:
+
+| Result | Statement | Status |
+| --- | --- | --- |
+| Goto, Corollary 5.13 | add(N) ≤ add(UN) | Lean proof, by a different route |
+| Goto, Proposition 5.4 | non(UN) = non(N) | Lean proof, by a different route |
+| Grzegorek's theorem | There is a universally null set of size non(N) | Lean proof, by a different route |
+
+"Lean proof" means: a theorem of the stated type, with no hypothesis, whose axioms are
+`propext`, `Classical.choice` and `Quot.sound`. The note's Corollary (c) has two more parts
+(b < cof(N) and add(UN) ≤ min(d, cf(non(N)))). They are not in the Lean statement.
 
 By Theorem B and the cited results, the Mathias, Laver, Miller and Sacks models all satisfy
 add(UN) = add(N), and no model with c ≤ ℵ₂ can separate the two cardinals.
@@ -73,6 +84,7 @@ The case **non(N) < cof(N), c ≥ ℵ₃, and every universally null set has siz
 | --- | --- |
 | `notes/partial-results.md` | The current note: statements, full informal proofs, literature, open directions |
 | `notes/formalisation-theorem-b.md` | What the Lean proof of Theorem B covers and where it differs from the note |
+| `notes/formalisation-theorem-a-and-cited.md` | The Lean proofs of Theorem A and the cited results, and where they differ from the note |
 | `notes/superseded-v1.md` | An earlier, weaker note. Kept for the record |
 | `agent-logs/round1.json`, `round2.json` | Raw agent output: literature reports, proof attempts (including failed ones), referee reports |
 | `AddUN/IdealInvariant.lean` | `add`, `cov`, `non`, `cof` of a family of sets, with basic lemmas |
@@ -84,7 +96,13 @@ The case **non(N) < cof(N), c ≥ ℵ₃, and every universally null set has siz
 | `AddUN/TheoremB.lean` | The statement `CodingLemma` and Theorem B from it |
 | `AddUN/SecondMoment.lean` | The second-moment bound used for the width of the slalom |
 | `AddUN/Coding.lean` | Lemma 2: the proof of `CodingLemma` |
-| `AddUN/Main.lean` | The final theorems |
+| `AddUN/Additivity.lean` | add(N) ≤ add(UN) |
+| `AddUN/InitialCylinder.lean` | The initial cylinders generate the σ-algebra of the Cantor space |
+| `AddUN/Uniformity.lean` | Halving of atomless measures; non(UN) = non(N) |
+| `AddUN/Grzegorek.lean` | Grzegorek's theorem |
+| `AddUN/ZeroOne.lean` | A zero–one law for sets invariant under finite flips |
+| `AddUN/TheoremA.lean` | Theorem A |
+| `AddUN/Main.lean` | The final theorems, with no hypothesis |
 
 The agent logs mention local file paths such as `scratch/...` and `local/...`. Those files are
 not in this repository.
@@ -101,36 +119,32 @@ lake exe cache get
 lake build
 ```
 
-The project contains no `sorry` and no `axiom`. Each unproved claim is a `def` of type `Prop`
-in `AddUN/Statements.lean`, for example `AddUN.TheoremA`. A claim counts as proved when the
+The project contains no `sorry` and no `axiom`. Each claim is a `def` of type `Prop` in
+`AddUN/Statements.lean`, for example `AddUN.TheoremA`. A claim counts as proved when the
 project has a theorem of that type and `#print axioms` shows only `propext`,
 `Classical.choice` and `Quot.sound`.
 
-Proved so far:
+Proved so far: every `Prop` of `AddUN/Statements.lean` except `Question63`.
 
-- Basic facts: the coin-tossing measure has no atoms, `𝒰𝒩 ⊆ 𝒩`, both additivities are
-  uncountable, `add ≤ non ≤ cof` under the usual conditions, `cof 𝒩 ≤ 𝔠`.
+- `gotoCor513 : GotoCor513`, `gotoProp54 : GotoProp54`, `grzegorek : Grzegorek`.
+- `theoremA : TheoremA`, `theoremB : TheoremB`.
+- `corollaryA : CorollaryA`, `corollaryB : CorollaryB`, `corollaryC : CorollaryC`.
+- `add_null_eq_add_universallyNull_of_continuum_le_aleph_two : 𝔠 ≤ ℵ₂ → add 𝒩 = add 𝒰𝒩`.
+- `add_universallyNull_le_min : add 𝒰𝒩 ≤ min 𝔡 (non 𝒩)`.
 - Lemmas 1, 2 and 3 of the note: `exists_unlocalised_family`, `codingLemma`,
   `IsUniversallyNull.of_injOn`.
-- The hard direction of Theorem B, with no hypothesis:
-  `add_universallyNull_le_add_null (A) (hA : IsUniversallyNull A) (hcard : #A = cof 𝒩) :
-  add 𝒰𝒩 ≤ add 𝒩`.
-- `theoremB_of_gotoCor513 : GotoCor513 → TheoremB` and
-  `corollaries_of_cited : Grzegorek → GotoCor513 → CorollaryA ∧ CorollaryB ∧ CorollaryC`.
 
-Not proved: `GotoCor513`, `GotoProp54`, `Grzegorek`, `TheoremA`. `TheoremB` has no theorem of
-its own type, because it needs `GotoCor513`.
+Not proved: `Question63`. It is the open question.
 
 ## Good next tasks
 
-1. **Review the Lean definitions and the final statement.** Lean checks the proof of
-   Theorem B, not that `IsUniversallyNull`, `cantorMeasure`, `add` and `cof` say what the
-   note means. The list is in `notes/formalisation-theorem-b.md`.
-2. **Formalise the cited results**: add(N) ≤ add(UN) (this would prove `TheoremB` outright)
-   and Grzegorek's theorem.
-3. **Formalise Theorem A.**
-4. **Search the literature** in the places not yet covered.
-5. **Attack the open case**: decide add(UN) ≤ b, or analyse one of the candidate models.
+1. **Review the Lean definitions and the final statements.** Lean checks the proofs, not
+   that `IsUniversallyNull`, `cantorMeasure`, `add`, `non`, `cof` and `dominatingNumber` say
+   what the note means. The lists are in the two formalisation notes.
+2. **Search the literature** in the places not yet covered.
+3. **Attack the open case**: decide add(UN) ≤ b, or analyse one of the candidate models.
+4. **Formalise the rest of Corollary (c)**: Recław's theorem (a universally null set of size
+   b) and add(UN) ≤ cf(non(N)).
 
 See [AGENTS.md](AGENTS.md) for the working rules.
 

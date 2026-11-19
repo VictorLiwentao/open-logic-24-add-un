@@ -7,8 +7,13 @@ referee reports in all, and the coordinating AI (Claude) also checked its proof 
 
 Update (2026-11-19). The new half of Theorem B, add(UN) ≤ add(N) from a universally null set
 of size cof(N), now has a Lean proof, including Lemmas 1, 2 and 3. The Lean proof changes some
-steps of the proof below. See `formalisation-theorem-b.md`. Theorem A still has no formal
-proof.
+steps of the proof below. See `formalisation-theorem-b.md`.
+
+Second update (2026-11-19). Theorem A and the cited facts (F3, Grzegorek only) and (F4) now
+have Lean proofs too, so Theorems A and B and Corollaries (a), (b) and the Lean form of (c)
+hold with no hypothesis. The Lean proof of Theorem A changes the construction below, and the
+cited facts are proved by other routes. See `formalisation-theorem-a-and-cited.md`. Recław's
+theorem, (F1) and (F2) are not formalised.
 
 Source question: T. Goto, *Forcing and cardinal invariants of universally null sets*,
 arXiv:2607.12936v4, Question 6.3. Is add(N) < add(UN) consistent, or does ZFC prove

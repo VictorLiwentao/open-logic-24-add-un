@@ -16,18 +16,20 @@ Let `𝒩` be the ideal of null sets of the coin-tossing measure on the Cantor s
 and `𝒰𝒩` the ideal of universally null sets. The question asks whether `add 𝒩 < add 𝒰𝒩` is
 consistent, or whether ZFC proves `add 𝒩 = add 𝒰𝒩`.
 
-Every unproved claim in this file is a `def` of type `Prop`. Nothing here uses `sorry` or an
-`axiom`. A claim is proved when the project contains a theorem of that type whose axioms are
-only `propext`, `Classical.choice` and `Quot.sound`.
+Every claim in this file is a `def` of type `Prop`. Nothing here uses `sorry` or an `axiom`. A
+claim is proved when the project contains a theorem of that type whose axioms are only
+`propext`, `Classical.choice` and `Quot.sound`.
 
 * `Question63`: the open question. Lean cannot state consistency over ZFC, so this is the
-  statement of equality. A ZFC proof of equality proves it.
-* `GotoCor513`, `GotoProp54`, `Grzegorek`: results cited from the literature, not proved here.
+  statement of equality. A ZFC proof of equality proves it. It is not proved.
+* `GotoCor513`, `GotoProp54`, `Grzegorek`: results cited from the literature. They are proved
+  in `AddUN/Additivity.lean`, `AddUN/Uniformity.lean` and `AddUN/Grzegorek.lean`.
 * `TheoremA`, `TheoremB`, `CorollaryA`, `CorollaryB`, `CorollaryC`: claims of
-  `notes/partial-results.md`. Their informal proofs have not been checked by a human.
+  `notes/partial-results.md`. They are proved in `AddUN/TheoremA.lean` and `AddUN/Main.lean`.
+  No human has checked the informal proofs or the Lean definitions.
 
-The theorems at the end are proved. They show that the corollaries follow from `TheoremB` and
-the cited results.
+The theorems at the end of this file show that the corollaries follow from `TheoremB` and the
+cited results.
 -/
 
 @[expose] public section

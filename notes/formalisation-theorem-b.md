@@ -19,9 +19,13 @@ Also proved: `theoremB_of_gotoCor513 : GotoCor513 → TheoremB` and
 
 ## What is not proved
 
+This section describes the state after the first round of work. It is out of date. Later on
+2026-11-19 `GotoCor513`, `GotoProp54`, `Grzegorek`, `TheoremA` and `TheoremB` were all proved.
+See `formalisation-theorem-a-and-cited.md`.
+
 - `TheoremB` itself is an equality. Its other half, add(N) ≤ add(UN), is Goto's
-  Corollary 5.13. It is still the unproved `Prop` `GotoCor513`.
-- `Grzegorek`, `GotoProp54` and `TheoremA` are still unproved `Prop`s.
+  Corollary 5.13. After the first round it was still the unproved `Prop` `GotoCor513`.
+- After the first round `Grzegorek`, `GotoProp54` and `TheoremA` were still unproved `Prop`s.
 - No statement in `AddUN/Statements.lean` was changed.
 
 ## What a reviewer should check
