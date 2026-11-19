@@ -396,4 +396,4 @@ Nothing I found contradicts Plan Z or Scheme GS. Details:
 - "Still undecided in ZFC": note that add(UN) ≤ b and add(UN) ≤ non(NA) together are
   equivalent to add(UN) = add(N).
 
-Fetched texts are in the session scratchpad under `dl/` and `txt/`. They can be wiped.
+The fetched texts are not in this repository.

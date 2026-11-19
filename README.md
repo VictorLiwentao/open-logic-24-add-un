@@ -21,7 +21,8 @@ Known from the paper: add(N) ≤ add(UN) ≤ non(UN) = non(N).
 
 ## Read this first: how much to trust the results
 
-- All results here were produced by AI agents (Claude) in two rounds on 2026-11-16.
+- All results here were produced by AI agents (Claude): two rounds on 2026-11-16 and a third
+  on 2026-11-19.
 - Each proof was attacked by independent AI referees. Theorem B was found twice by separate
   agents and passed five referee reports.
 - **No human expert has checked any proof.**
@@ -73,10 +74,17 @@ The case **non(N) < cof(N), c ≥ ℵ₃, and every universally null set has siz
 - Undecided in ZFC: add(UN) ≤ b, add(UN) ≤ cov(M), add(UN) ≤ non(M).
 - The method of Theorem A cannot be sharpened below d, and the "leaf" devices that were tried
   need at least cov(M) maps. See "What is still open" in the note.
-- Candidate models that the constraints do not yet rule out: Cichoń's maximum via Boolean
+- Candidate models that Theorem B does not rule out: Cichoń's maximum via Boolean
   ultrapowers ([arXiv:1708.03691](https://arxiv.org/abs/1708.03691)), the alternative order of
   Kellner, Shelah and Tanasie ([arXiv:1712.00778](https://arxiv.org/abs/1712.00778)), and
   Brendle's shattered iterations ([arXiv:2302.05069](https://arxiv.org/abs/2302.05069)).
+
+A third round (2026-11-19) attacked this case and did not solve it. Its notes are in
+[notes/open-case/](notes/open-case/README.md). They have no Lean proof and no human review.
+The main claim is that add(UN) = add(N) holds after adding a Cohen real, and in every finite
+support iteration of nontrivial ccc posets of uncountable cofinality. If the claim is right,
+the first two candidate models above probably satisfy equality. That step is only partly
+checked.
 
 ## Repository layout
 
@@ -85,6 +93,7 @@ The case **non(N) < cof(N), c ≥ ℵ₃, and every universally null set has siz
 | `notes/partial-results.md` | The current note: statements, full informal proofs, literature, open directions |
 | `notes/formalisation-theorem-b.md` | What the Lean proof of Theorem B covers and where it differs from the note |
 | `notes/formalisation-theorem-a-and-cited.md` | The Lean proofs of Theorem A and the cited results, and where they differ from the note |
+| `notes/open-case/` | Round 3: attempts on the open case, with a summary in its `README.md`. Not checked by Lean or by a human |
 | `notes/superseded-v1.md` | An earlier, weaker note. Kept for the record |
 | `agent-logs/round1.json`, `round2.json` | Raw agent output: literature reports, proof attempts (including failed ones), referee reports |
 | `AddUN/IdealInvariant.lean` | `add`, `cov`, `non`, `cof` of a family of sets, with basic lemmas |
@@ -143,6 +152,8 @@ Not proved: `Question63`. It is the open question.
    what the note means. The lists are in the two formalisation notes.
 2. **Search the literature** in the places not yet covered.
 3. **Attack the open case**: decide add(UN) ≤ b, or analyse one of the candidate models.
+   Read [notes/open-case/README.md](notes/open-case/README.md) first. Checking its Cohen
+   real argument is a good small task.
 4. **Formalise the rest of Corollary (c)**: Recław's theorem (a universally null set of size
    b) and add(UN) ≤ cf(non(N)).
 
