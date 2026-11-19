@@ -6,6 +6,7 @@ module
 public import AddUN.Additivity
 public import AddUN.CantorMeasure
 public import AddUN.Coding
+public import AddUN.Grzegorek
 public import AddUN.IdealInvariant
 public import AddUN.InitialCylinder
 public import AddUN.Localisation
