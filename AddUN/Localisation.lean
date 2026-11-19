@@ -74,18 +74,19 @@ lemma exists_clopens_iUnion_eq (μ : Measure (ℕ → Bool)) {U : Set (ℕ → B
 
 /-- Every null set is covered infinitely often by a sequence of clopen sets whose measures have
 a finite sum. -/
-lemma exists_clopens_summable {G : Set (ℕ → Bool)} (hG : cantorMeasure G = 0) :
-    ∃ B : ℕ → Clopens (ℕ → Bool), ∑' i, cantorMeasure (B i) ≠ ∞ ∧
+lemma exists_clopens_summable (μ : Measure (ℕ → Bool)) [IsFiniteMeasure μ]
+    {G : Set (ℕ → Bool)} (hG : μ G = 0) :
+    ∃ B : ℕ → Clopens (ℕ → Bool), ∑' i, μ (B i) ≠ ∞ ∧
       ∀ x ∈ G, ∃ᶠ i in atTop, x ∈ B i := by
-  have hU : ∀ j : ℕ, ∃ U ⊇ G, IsOpen U ∧ cantorMeasure U ≤ 2⁻¹ ^ j := fun j ↦ by
-    simpa [hG] using G.exists_isOpen_le_add cantorMeasure (ε := 2⁻¹ ^ j) (by simp)
+  have hU : ∀ j : ℕ, ∃ U ⊇ G, IsOpen U ∧ μ U ≤ 2⁻¹ ^ j := fun j ↦ by
+    simpa [hG] using G.exists_isOpen_le_add μ (ε := 2⁻¹ ^ j) (by simp)
   choose U hGU hUo hUm using hU
-  choose D hDU hDm using fun j ↦ exists_clopens_iUnion_eq cantorMeasure (hUo j)
+  choose D hDU hDm using fun j ↦ exists_clopens_iUnion_eq μ (hUo j)
   refine ⟨fun i ↦ D i.unpair.1 i.unpair.2, ?_, fun x hx ↦ ?_⟩
-  · have h1 : ∑' i : ℕ, cantorMeasure (D i.unpair.1 i.unpair.2) =
-        ∑' p : ℕ × ℕ, cantorMeasure (D p.1 p.2) :=
-      (Nat.pairEquiv.symm.tsum_eq fun p : ℕ × ℕ ↦ cantorMeasure (D p.1 p.2))
-    rw [h1, ENNReal.tsum_prod (f := fun j r ↦ cantorMeasure (D j r))]
+  · have h1 : ∑' i : ℕ, μ (D i.unpair.1 i.unpair.2) =
+        ∑' p : ℕ × ℕ, μ (D p.1 p.2) :=
+      (Nat.pairEquiv.symm.tsum_eq fun p : ℕ × ℕ ↦ μ (D p.1 p.2))
+    rw [h1, ENNReal.tsum_prod (f := fun j r ↦ μ (D j r))]
     simp_rw [hDm]
     refine ne_top_of_le_ne_top ?_ (ENNReal.tsum_le_tsum hUm)
     rw [ENNReal.tsum_geometric]
@@ -114,13 +115,14 @@ lemma exists_between_of_strictMono {φ : ℕ → ℕ} (hφ : StrictMono φ) {N i
     (not_lt.1 hcon)
 
 /-- Step 1 of Lemma 1. Every null set is contained in the `limsup` of a sequence of clopen sets
-`C n` with `cantorMeasure (C n) ≤ ε n`. -/
-theorem exists_clopens_limsup {G : Set (ℕ → Bool)} (hG : cantorMeasure G = 0) {ε : ℕ → ℝ≥0∞}
+`C n` with `μ (C n) ≤ ε n`, for every finite measure `μ` on the Cantor space. -/
+theorem exists_clopens_limsup (μ : Measure (ℕ → Bool)) [IsFiniteMeasure μ]
+    {G : Set (ℕ → Bool)} (hG : μ G = 0) {ε : ℕ → ℝ≥0∞}
     (hε : ∀ n, ε n ≠ 0) :
-    ∃ C : ℕ → Clopens (ℕ → Bool), (∀ n, cantorMeasure (C n) ≤ ε n) ∧
+    ∃ C : ℕ → Clopens (ℕ → Bool), (∀ n, μ (C n) ≤ ε n) ∧
       ∀ x ∈ G, ∃ᶠ n in atTop, x ∈ C n := by
-  obtain ⟨B, hB, hGB⟩ := exists_clopens_summable hG
-  have htail : ∀ n, ∀ᶠ k in atTop, ∑' i, cantorMeasure (B (i + k)) ≤ ε n := fun n ↦
+  obtain ⟨B, hB, hGB⟩ := exists_clopens_summable μ hG
+  have htail : ∀ n, ∀ᶠ k in atTop, ∑' i, μ (B (i + k)) ≤ ε n := fun n ↦
     (ENNReal.tendsto_sum_nat_add _ hB).eventually_le_const (pos_iff_ne_zero.2 (hε n))
   obtain ⟨φ, hφ, hφε⟩ := extraction_forall_of_eventually htail
   have hCc : ∀ n, IsClopen (⋃ i ∈ Finset.Ico (φ n) (φ (n + 1)), (B i : Set (ℕ → Bool))) :=
@@ -149,26 +151,25 @@ lemma exists_null_sUnion_notMem : ∃ 𝒜 ⊆ 𝒩, ⋃₀ 𝒜 ∉ 𝒩 := by
       simp
     simp [h]
 
-/-- **Lemma 1.** For every `h : ℕ → ℕ` there is a family `F` of at most `add 𝒩` functions such
-that no slalom of width `h` localises every member of `F`. -/
-theorem exists_unlocalised_family (h : ℕ → ℕ) :
-    ∃ F : Set (ℕ → ℕ), #F ≤ add 𝒩 ∧
-      ∀ S : ℕ → Finset ℕ, (∀ n, (S n).card ≤ h n) → ∃ f ∈ F, ∃ᶠ n in atTop, f n ∉ S n := by
-  obtain ⟨𝒢, h𝒢, hU, hcard⟩ := exists_sUnion_notMem_mk_eq_add exists_null_sUnion_notMem
+/-- Let `𝒢` be a family of null sets of a finite measure `μ` on the Cantor space. If every family
+of at most `#𝒢` functions is localised by a slalom of width `h`, then the union of `𝒢` is
+`μ`-null. -/
+theorem measure_sUnion_null_of_localised (μ : Measure (ℕ → Bool)) [IsFiniteMeasure μ] (h : ℕ → ℕ)
+    {𝒢 : Set (Set (ℕ → Bool))} (h𝒢 : ∀ G ∈ 𝒢, μ G = 0)
+    (hloc : ∀ F : Set (ℕ → ℕ), #F ≤ #𝒢 → ∃ S : ℕ → Finset ℕ, (∀ n, (S n).card ≤ h n) ∧
+      ∀ f ∈ F, ∀ᶠ n in atTop, f n ∈ S n) :
+    μ (⋃₀ 𝒢) = 0 := by
   obtain ⟨O, hO⟩ := exists_surjective_nat (Clopens (ℕ → Bool))
   let ε : ℕ → ℝ≥0∞ := fun n ↦ 2⁻¹ ^ n * ((h n : ℝ≥0∞) + 1)⁻¹
   have hε : ∀ n, ε n ≠ 0 := fun n ↦ by simp [ε]
-  choose C hCε hCG using fun G : 𝒢 ↦ exists_clopens_limsup (h𝒢 G.2) hε
-  refine ⟨range fun G : 𝒢 ↦ fun n ↦ Function.surjInv hO (C G n), hcard ▸ mk_range_le,
-    fun S hS ↦ ?_⟩
-  by_contra hcon
-  push Not at hcon
+  choose C hCε hCG using fun G : 𝒢 ↦ exists_clopens_limsup μ (h𝒢 G G.2) hε
+  obtain ⟨S, hS, hSF⟩ := hloc (range fun G : 𝒢 ↦ fun n ↦ Function.surjInv hO (C G n)) mk_range_le
   classical
   -- The slalom gives a null set that contains every member of `𝒢`.
   let D : ℕ → Set (ℕ → Bool) := fun n ↦
-    ⋃ k ∈ S n, if cantorMeasure (O k) ≤ ε n then (O k : Set (ℕ → Bool)) else ∅
-  have hD : ∀ n, cantorMeasure (D n) ≤ 2⁻¹ ^ n := fun n ↦ by
-    have h1 : cantorMeasure (D n) ≤ ∑ k ∈ S n, ε n := by
+    ⋃ k ∈ S n, if μ (O k) ≤ ε n then (O k : Set (ℕ → Bool)) else ∅
+  have hD : ∀ n, μ (D n) ≤ 2⁻¹ ^ n := fun n ↦ by
+    have h1 : μ (D n) ≤ ∑ k ∈ S n, ε n := by
       refine (measure_biUnion_finset_le _ _).trans (Finset.sum_le_sum fun k _ ↦ ?_)
       split_ifs with hk
       · exact hk
@@ -180,20 +181,32 @@ theorem exists_unlocalised_family (h : ℕ → ℕ) :
     refine ENNReal.div_le_of_le_mul ?_
     rw [one_mul]
     exact (Nat.cast_le.2 (hS n)).trans le_self_add
-  have hnull : cantorMeasure (limsup D atTop) = 0 := by
+  have hnull : μ (limsup D atTop) = 0 := by
     refine measure_limsup_atTop_eq_zero (ne_top_of_le_ne_top ?_ (ENNReal.tsum_le_tsum hD))
     rw [ENNReal.tsum_geometric]
     simp
-  refine hU (measure_mono_null (fun x hx ↦ ?_) hnull)
+  refine measure_mono_null (fun x hx ↦ ?_) hnull
   obtain ⟨G, hG, hxG⟩ := hx
-  have hloc : ∀ᶠ n in atTop, Function.surjInv hO (C ⟨G, hG⟩ n) ∈ S n := by
-    have := hcon _ ⟨⟨G, hG⟩, rfl⟩
-    simpa using this
+  have hloc' : ∀ᶠ n in atTop, Function.surjInv hO (C ⟨G, hG⟩ n) ∈ S n :=
+    hSF _ ⟨⟨G, hG⟩, rfl⟩
   rw [mem_limsup_iff_frequently_mem]
-  refine ((hCG ⟨G, hG⟩ x hxG).and_eventually hloc).mono fun n hn ↦ ?_
+  refine ((hCG ⟨G, hG⟩ x hxG).and_eventually hloc').mono fun n hn ↦ ?_
   have hOk : O (Function.surjInv hO (C ⟨G, hG⟩ n)) = C ⟨G, hG⟩ n := Function.surjInv_eq hO _
   refine mem_biUnion hn.2 ?_
   rw [hOk, if_pos (hCε ⟨G, hG⟩ n)]
   exact hn.1
+
+/-- **Lemma 1.** For every `h : ℕ → ℕ` there is a family `F` of at most `add 𝒩` functions such
+that no slalom of width `h` localises every member of `F`. -/
+theorem exists_unlocalised_family (h : ℕ → ℕ) :
+    ∃ F : Set (ℕ → ℕ), #F ≤ add 𝒩 ∧
+      ∀ S : ℕ → Finset ℕ, (∀ n, (S n).card ≤ h n) → ∃ f ∈ F, ∃ᶠ n in atTop, f n ∉ S n := by
+  obtain ⟨𝒢, h𝒢, hU, hcard⟩ := exists_sUnion_notMem_mk_eq_add exists_null_sUnion_notMem
+  by_contra hcon
+  refine hU (measure_sUnion_null_of_localised cantorMeasure h (fun G hG ↦ h𝒢 hG) fun F hF ↦ ?_)
+  by_contra hno
+  refine hcon ⟨F, hcard ▸ hF, fun S hS ↦ ?_⟩
+  by_contra hf
+  exact hno ⟨S, hS, fun f hfF ↦ by_contra fun hev ↦ hf ⟨f, hfF, not_eventually.1 hev⟩⟩
 
 end AddUN

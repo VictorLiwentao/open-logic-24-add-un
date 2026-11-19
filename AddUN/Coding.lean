@@ -338,9 +338,11 @@ end Coding
 
 open Coding
 
-/-- **Lemma 2 (the coding lemma).** -/
-theorem codingLemma : CodingLemma := by
-  refine ⟨fun n ↦ 2 ^ (3 * mu n + n), decode, measurable_decode, fun K hK hKpos c ↦ ?_⟩
+/-- The coding lemma for the map `decode` and the width `2 ^ (3 * mu n + n)`. -/
+theorem exists_slalom_decode {K : Set (ℕ → Bool)} (hK : IsCompact K) (hKpos : cantorMeasure K ≠ 0)
+    (c : ℕ → Bool) :
+    ∃ S : ℕ → Finset ℕ, (∀ n, (S n).card ≤ 2 ^ (3 * mu n + n)) ∧
+      ∀ f : ℕ → ℕ, (∃ᶠ n in atTop, f n ∉ S n) → ∃ w ∈ K, decode f w = c := by
   have hKm : MeasurableSet K := hK.isClosed.measurableSet
   refine ⟨fun n ↦ (finite_bad hKm c n).toFinset,
     fun n ↦ card_le_of_subset_bad hKm (c := c) (n := n) _ (by simp), fun f hf ↦ ?_⟩
@@ -402,5 +404,10 @@ theorem codingLemma : CodingLemma := by
     filter_upwards [eventually_ge_atTop n₀] with n hn hmark
     obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hn
     rw [apply_of_mem_hit (h1 m hmark.2) hmark.1, hci]
+
+/-- **Lemma 2 (the coding lemma).** -/
+theorem codingLemma : CodingLemma :=
+  ⟨fun n ↦ 2 ^ (3 * mu n + n), decode, measurable_decode, fun _ hK hKpos c ↦
+    exists_slalom_decode hK hKpos c⟩
 
 end AddUN
